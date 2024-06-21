@@ -1,11 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import { HomePage, ProductPage } from "./pages";
+import Homepage from "./pages/Homepage";
+import { ProductPage } from "./pages";
+import ProductCreatePage from "./pages/ProductCreatePage";
 
 const App = () => {
   return (
     <Routes>
-      <Route index element={<HomePage />} />
+      <Route index element={<Homepage />} />
       <Route path="/:productId" element={<ProductPage />} />
+      <Route path="/create" element={<ProductCreatePage />} />
     </Routes>
   );
 };

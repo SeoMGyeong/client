@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ProductType } from "../interface";
+import { ProductType } from "../type";
 
 const ProductPage = () => {
   const { productId } = useParams<{ productId: string }>();

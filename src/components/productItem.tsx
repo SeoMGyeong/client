@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ProductItemProps } from "../interface";
+import { ProductItemProps } from "../type";
 import { Link } from "react-router-dom";
 
 const ProductItem = ({ product, onDelete, onUpdate }: ProductItemProps) => {
