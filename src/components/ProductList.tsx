@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./productItem";
 import { ProductType } from "../type";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 
 const ProductList = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
@@ -15,6 +15,7 @@ const ProductList = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  /* 주석처리? 근데 하면 오류뜸
   const handleDelete = (id: string) => {
     fetch(`/product/${id}`, { method: "DELETE" }).then((res) => {
       if (res.ok) {
@@ -23,7 +24,7 @@ const ProductList = () => {
     });
   };
 
-  // 상품수정
+  
   const handleUpdate = (updateProduct: ProductType) => {
     fetch(`/product/${updateProduct.id}`, {
       method: "PATCH",
@@ -39,7 +40,7 @@ const ProductList = () => {
       }
     });
   };
-
+*/
   if (isLoading)
     return (
       <CircularProgress sx={{ position: "fixed", left: "50%", top: "50%" }} />
@@ -48,14 +49,11 @@ const ProductList = () => {
   return (
     <>
       <h2>상품 목록</h2>
-      {products.map((product) => (
-        <ProductItem
-          key={product.id}
-          product={product}
-          onDelete={handleDelete}
-          onUpdate={handleUpdate}
-        />
-      ))}
+      <Grid container spacing={3}>
+        {products.map((product) => (
+          <ProductItem key={product.id} product={product} />
+        ))}
+      </Grid>
     </>
   );
 };

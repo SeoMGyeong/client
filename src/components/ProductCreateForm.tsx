@@ -1,16 +1,16 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { ProductType } from "../type";
 import { Button, Container, TextField, Typography } from "@mui/material";
 import ThumbnailUploader from "./ThumbnailUploader";
 
 const ProductCreateForm = () => {
+  // 초기값 설정
   const [name, setName] = useState("");
-  const [explanation, setExplanation] = useState("");
   const [price, setPrice] = useState(0);
-  const [products, setProducts] = useState<ProductType[]>([]);
+  const [explanation, setExplanation] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
 
-  // 상품생성(등록)
+  // 물건 등록
   const handleCreate = (event: React.FormEvent) => {
     event.preventDefault();
     const newProduct: Omit<ProductType, "id"> = {
@@ -26,19 +26,57 @@ const ProductCreateForm = () => {
       body: JSON.stringify(newProduct),
     })
       .then((res) => res.json())
-      .then((data) => setProducts((prev) => [...prev, data.product]));
+      .then((data) => {
+        console.log(data);
+      });
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    return setName(event.target.value);
   };
+
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPrice(Number(event.target.value));
+    return setPrice(Number(event.target.value));
   };
+
   const handleExplanationChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setExplanation(event.target.value);
+    return setExplanation(event.target.value);
+  };
+
+  const uploadThumbnailRequest = (productId: string, thumbnail: File) => {
+    const formData = new FormData();
+    formData.append("thumbnail", thumbnail);
+    return fetch(`/product/thumbnail/${productId}`, {
+      method: "PATCH",
+      body: formData,
+    });
+  };
+
+  const createProductRequest = (newProduct: Omit<ProductType, "id">) => {
+    return fetch("/product", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newProduct),
+    });
+  };
+
+  const handleCreateProduct = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const response = await createProductRequest({
+      name,
+      explanation,
+      price,
+    });
+    const data = await response.json();
+
+    if (thumbnail) {
+      await uploadThumbnailRequest(data.product.id, thumbnail);
+    }
   };
 
   return (
@@ -46,7 +84,7 @@ const ProductCreateForm = () => {
       <Typography variant="h4" align="center" gutterBottom>
         상품등록
       </Typography>
-      <form onSubmit={handleCreate}>
+      <form onSubmit={handleCreateProduct}>
         <TextField
           label="상품명"
           fullWidth
@@ -54,6 +92,7 @@ const ProductCreateForm = () => {
           onChange={handleNameChange}
           margin="normal"
         />
+
         <TextField
           label="가격"
           fullWidth
@@ -61,8 +100,9 @@ const ProductCreateForm = () => {
           onChange={handlePriceChange}
           margin="normal"
         />
+
         <TextField
-          label="상품설명"
+          label="상품 설명"
           fullWidth
           multiline
           rows={5}
@@ -76,12 +116,12 @@ const ProductCreateForm = () => {
         />
         <Button
           type="submit"
+          variant="contained"
           color="primary"
           fullWidth
-          variant="contained"
           sx={{ marginTop: 6 }}
         >
-          등록
+          생성
         </Button>
       </form>
     </Container>
