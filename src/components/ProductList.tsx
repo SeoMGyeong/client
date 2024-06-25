@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./productItem";
 import { ProductType } from "../type";
+import { CircularProgress } from "@mui/material";
 
 const ProductList = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch("/product")
       .then((res) => res.json())
-      .then((data) => setProducts(data.products));
+      .then((data) => setProducts(data.products))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const handleDelete = (id: string) => {
@@ -35,6 +39,11 @@ const ProductList = () => {
       }
     });
   };
+
+  if (isLoading)
+    return (
+      <CircularProgress sx={{ position: "fixed", left: "50%", top: "50%" }} />
+    );
 
   return (
     <>
