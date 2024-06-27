@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { ProductType } from "../type";
-import { Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ThumbnailUploader from "./ThumbnailUploader";
+import { useNavigate } from "react-router-dom";
 
 const ProductCreateForm = () => {
   // 초기값 설정
@@ -9,6 +20,9 @@ const ProductCreateForm = () => {
   const [price, setPrice] = useState(0);
   const [explanation, setExplanation] = useState("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [createProductId, setCreateProductID] = useState("");
+  const navigate = useNavigate();
 
   // 물건 등록
   const handleCreate = (event: React.FormEvent) => {
@@ -45,6 +59,11 @@ const ProductCreateForm = () => {
     return setExplanation(event.target.value);
   };
 
+  const handlePushProductPage = () => {
+    setIsModalOpen(false);
+    navigate(`/product/${createProductId}`);
+  };
+
   const uploadThumbnailRequest = (productId: string, thumbnail: File) => {
     const formData = new FormData();
     formData.append("thumbnail", thumbnail);
@@ -74,9 +93,10 @@ const ProductCreateForm = () => {
     });
     const data = await response.json();
 
-    if (thumbnail) {
-      await uploadThumbnailRequest(data.product.id, thumbnail);
-    }
+    if (thumbnail) await uploadThumbnailRequest(data.product.id, thumbnail);
+
+    setCreateProductID(data.product.id);
+    setIsModalOpen(true);
   };
 
   return (
@@ -121,9 +141,30 @@ const ProductCreateForm = () => {
           fullWidth
           sx={{ marginTop: 6 }}
         >
-          생성
+          등록
         </Button>
       </form>
+
+      <Dialog
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          성공적으로 등록했습니다.
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            상세페이지로 이동합니다.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePushProductPage} autoFocus>
+            확인
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -3,14 +3,18 @@ import Homepage from "./pages/Homepage";
 import { ProductPage } from "./pages";
 import ProductCreatePage from "./pages/ProductCreatePage";
 import Layout from "./components/Layout";
+import PurchasePage from "./pages/PurchasePage";
+import CartPage from "./pages/CartPage";
 
 const App = () => {
   return (
     <Layout>
       <Routes>
         <Route index element={<Homepage />} />
+        <Route path="create" element={<ProductCreatePage />} />
+        <Route path="cart" element={<CartPage />} />
         <Route path="product/:productId" element={<ProductPage />} />
-        <Route path="/create" element={<ProductCreatePage />} />
+        <Route path="purchase/:productId" element={<PurchasePage />} />
       </Routes>
     </Layout>
   );
