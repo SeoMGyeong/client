@@ -61,7 +61,7 @@ const ProductItem = ({ product }: ProductItemProps) => {
               whiteSpace: "nowrap",
             }}
           >
-            {product.price}
+            {product.price.toLocaleString("KR-ko")}원
           </Typography>
           <Typography
             gutterBottom

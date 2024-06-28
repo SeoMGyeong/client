@@ -15,6 +15,7 @@ import {
 import { API_SERVER_DOMAIN } from "../components/ApiServer";
 import { Delete, Edit } from "@mui/icons-material";
 import useCart from "../components/useCart";
+import { getProduct } from "../components/Api";
 
 const ProductPage = () => {
   const navigate = useNavigate();
@@ -39,10 +40,12 @@ const ProductPage = () => {
   };
 
   useEffect(() => {
-    fetch(`/product/${productId}`)
-      .then((res) => res.json())
-      .then((data) => setProduct(data.product));
-  }, []);
+    if (productId) {
+      getProduct(productId).then((response) =>
+        setProduct(response.data.product)
+      );
+    }
+  }, [productId]);
 
   const handlePushCartPage = () => {
     navigate("/cart");
@@ -90,7 +93,7 @@ const ProductPage = () => {
         </Box>
         <Box>
           <Typography variant="h6" sx={{ mb: 4 }}>
-            {product?.price} 원
+            {product?.price.toLocaleString("KR-ko")} 원
           </Typography>
           <Typography variant="body1" sx={{ mb: 4 }}>
             {product?.explanation}

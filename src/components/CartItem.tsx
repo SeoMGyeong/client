@@ -9,12 +9,14 @@ import {
 import { ProductType } from "../type";
 import { API_SERVER_DOMAIN } from "./ApiServer";
 import { Add, Delete, Remove } from "@mui/icons-material";
+import useCart from "./useCart";
 
 type Props = {
-  cart: ProductType;
+  cart: ProductType & { count: number };
 };
 
 const CartItem = ({ cart }: Props) => {
+  const { changeCount, deleteCarts } = useCart();
   return (
     <Card sx={{ display: "flex", marginBottom: 2 }}>
       {cart.thumbnail && (
@@ -33,16 +35,16 @@ const CartItem = ({ cart }: Props) => {
         </Typography>
         <Grid container justifyContent={"space-between"}>
           <Grid item>
-            <IconButton>
+            <IconButton onClick={() => changeCount(cart.id, "decrease")}>
               <Remove />
             </IconButton>
-            {0}
-            <IconButton>
+            {cart.count}
+            <IconButton onClick={() => changeCount(cart.id, "increase")}>
               <Add />
             </IconButton>
           </Grid>
           <Grid item>
-            <IconButton>
+            <IconButton onClick={() => deleteCarts(cart.id)}>
               <Delete />
             </IconButton>
           </Grid>

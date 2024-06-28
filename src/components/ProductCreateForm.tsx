@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import ThumbnailUploader from "./ThumbnailUploader";
 import { useNavigate } from "react-router-dom";
+import { createProduct, modifyThumbnail } from "./Api";
 
 const ProductCreateForm = () => {
   // 초기값 설정
@@ -86,16 +87,17 @@ const ProductCreateForm = () => {
   const handleCreateProduct = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const response = await createProductRequest({
+    const {
+      data: { product },
+    } = await createProduct({
       name,
       explanation,
       price,
     });
-    const data = await response.json();
 
-    if (thumbnail) await uploadThumbnailRequest(data.product.id, thumbnail);
+    if (thumbnail) await modifyThumbnail(product.id, thumbnail);
 
-    setCreateProductID(data.product.id);
+    setCreateProductID(product.id);
     setIsModalOpen(true);
   };
 
