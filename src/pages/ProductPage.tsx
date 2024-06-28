@@ -14,22 +14,22 @@ import {
 } from "@mui/material";
 import { API_SERVER_DOMAIN } from "../components/ApiServer";
 import { Delete, Edit } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
+import useCart from "../components/useCart";
 
 const ProductPage = () => {
   const navigate = useNavigate();
   const { productId } = useParams<{ productId: string }>();
-
   const [product, setProduct] = useState<ProductType | null>(null);
-  const [cookies, setCookies] = useCookies(["cart"]);
   const [isCModalOpen, setIsCModalOpen] = useState(false);
   const [isDModalOpen, setIsDModalOpen] = useState(false);
-  const cartItems = cookies.cart as ProductType[];
+
+  const { addCart } = useCart();
 
   const handleAddCart = () => {
-    const nextValue = cartItems ? [...cartItems, product] : [product];
-    setCookies("cart", nextValue, { path: "/" });
-    setIsCModalOpen(true);
+    if (product) {
+      addCart(product.id);
+      setIsCModalOpen(true);
+    }
   };
 
   const handlePushPurchasePage = () => {

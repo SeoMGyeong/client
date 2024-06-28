@@ -15,12 +15,15 @@ import { ProductType } from "../type";
 import { useCookies } from "react-cookie";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CartItem from "../components/CartItem";
+import useCart from "../components/useCart";
 
 const CartPage = () => {
   const navigate = useNavigate();
   const [cookies] = useCookies(["cart"]);
   const cartItems = cookies.cart as ProductType[];
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { carts } = useCart();
 
   const handlePushHomePage = () => {
     setIsModalOpen(false);
@@ -32,6 +35,11 @@ const CartPage = () => {
     setIsModalOpen(true);
   };
 
+  const totalPrice = carts.reduce(
+    (prev, cur) => prev + cur.price * cur.count,
+    0
+  );
+
   return (
     <>
       <Container fixed>
@@ -40,12 +48,12 @@ const CartPage = () => {
             <Typography variant="h4" sx={{ marginBottom: 2 }}>
               장바구니
             </Typography>
-            {!cartItems || cartItems.length === 0 ? (
+            {carts.length === 0 ? (
               <Typography variant="body1">
                 장바구니에 담긴 상품이 없습니다.
               </Typography>
             ) : (
-              <>CartItem 보기</>
+              carts.map((cart) => <CartItem key={cart.id} cart={cart} />)
             )}
           </Grid>
           <Grid item xs={12} sm={4}>
@@ -55,13 +63,13 @@ const CartPage = () => {
             <Box sx={{ position: "sticky", top: 20 }}>
               <Card sx={{ padding: 2 }}>
                 <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
-                  총 상품가격: 0원
+                  총 상품가격: {totalPrice}원
                 </Typography>
                 <Typography variant="subtitle1" sx={{ marginBottom: 1 }}>
                   총 배송비: 무료
                 </Typography>
                 <Typography variant="h6" sx={{ marginBottom: 2 }}>
-                  총 결제금액: 0원
+                  총 결제금액: {totalPrice}원
                 </Typography>
                 <Button
                   variant="contained"

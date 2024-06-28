@@ -5,6 +5,7 @@ import ProductCreatePage from "./pages/ProductCreatePage";
 import Layout from "./components/Layout";
 import PurchasePage from "./pages/PurchasePage";
 import CartPage from "./pages/CartPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="cart" element={<CartPage />} />
         <Route path="product/:productId" element={<ProductPage />} />
         <Route path="purchase/:productId" element={<PurchasePage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Layout>
   );
